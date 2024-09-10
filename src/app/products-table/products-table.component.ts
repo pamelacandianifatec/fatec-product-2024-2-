@@ -1,6 +1,6 @@
+import { Product } from './../product';
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
-import { Product } from '../product';
 import { ProductService } from '../product.service';
 
 @Component({
@@ -9,6 +9,7 @@ import { ProductService } from '../product.service';
   styleUrl: './products-table.component.css'
 })
 export class ProductsTableComponent implements OnInit{
+
 
   products : Product[] = [];
 
@@ -23,6 +24,12 @@ export class ProductsTableComponent implements OnInit{
         next: data => this.products = data
       }
     );
+  }
+
+  delete(product: Product){
+    this.service.delete(product).subscribe({
+      next: () => this.loadProducts()
+    })
   }
 
 }
