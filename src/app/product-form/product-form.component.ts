@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../product.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-product-form',
@@ -9,10 +10,21 @@ import { ProductService } from '../product.service';
 })
 export class ProductFormComponent implements OnInit{
 
+  formGroupProduct: FormGroup;
+
   constructor(private router: Router,
       private activeRoute: ActivatedRoute,
-      private service: ProductService
+      private service: ProductService,
+      private FormBuilder: FormBuilder
       ){
+
+    this.formGroupProduct = FormBuilder.group({
+      id       : [''],
+      name     : [''],
+      price    : [''],
+      category : ['']
+    });
+
   }
 
   ngOnInit() {
@@ -22,8 +34,14 @@ export class ProductFormComponent implements OnInit{
 
   loadProduct(id: number) {
       this.service.getProductById(id).subscribe({
-        next: data => alert (data.name)
-      })
+        next: data => this.formGroupProduct.setValue(data)
+      });
+  }
+
+  update(){
+    this.service.update(this.formGroupProduct.value).subscribe({
+      next: () => this.router.navigate(['products'])
+    });
   }
 
 }
